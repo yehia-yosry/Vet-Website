@@ -1,0 +1,157 @@
+@import 'tailwindcss';
+
+/*
+  Design tokens. Every colour, radius, shadow and font in the site comes from here,
+  so a future shop inherits the exact same visual language by using the same utilities.
+  The palette is built around the clinic logo (royal blue + red): the red becomes a warm
+  terracotta, the blue survives as a rare indigo accent (focus rings, links).
+*/
+@theme {
+  --font-sans: 'IBM Plex Sans Arabic', 'Segoe UI', Tahoma, sans-serif;
+  --font-accent: 'Aref Ruqaa', 'IBM Plex Sans Arabic', serif;
+
+  --color-ivory: #fbf6ec;
+  --color-cream: #f5ecdc;
+  --color-sand: #e9dcc4;
+  --color-sage-50: #eef2e7;
+  --color-sage-100: #dde7d1;
+  --color-sage-300: #aec3a0;
+  --color-sage-600: #557148;
+  --color-sage-800: #34472e;
+  --color-sage-900: #26331f;
+  --color-apricot-100: #fbe4d2;
+  --color-apricot-300: #f2c09b;
+  --color-apricot-500: #e59a6b;
+  --color-terracotta-500: #b84a31;
+  --color-terracotta-600: #9c3b25;
+  --color-indigo-brand: #3b2f9b;
+  --color-ink: #2a2e21;
+  --color-ink-soft: #4a4f3d;
+  --color-ink-mute: #666b57;
+  --color-line: #ddd0b8;
+
+  /* Mixed radii on purpose: sharp editorial edges next to soft and lush shapes. */
+  --radius-edge: 3px;
+  --radius-soft: 12px;
+  --radius-lush: 28px;
+
+  --shadow-soft: 0 1px 2px rgb(42 46 33 / 0.05), 0 14px 30px -14px rgb(42 46 33 / 0.2);
+  --shadow-lift: 0 2px 4px rgb(42 46 33 / 0.06), 0 26px 50px -20px rgb(42 46 33 / 0.32);
+
+  --ease-calm: cubic-bezier(0.22, 0.7, 0.2, 1);
+
+  --animate-marquee: marquee 60s linear infinite;
+  --animate-rise: rise 0.7s var(--ease-calm) both;
+
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(14px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    background: var(--color-ivory);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 1.0625rem;
+    line-height: 1.9;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    line-height: 1.35;
+    font-weight: 700;
+    letter-spacing: 0;
+  }
+  ::selection {
+    background: var(--color-apricot-300);
+  }
+  :focus-visible {
+    outline: 2.5px solid var(--color-indigo-brand);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+  /* Locks page scroll while any modal <dialog> is open, with no JS. */
+  html:has(dialog[open]) {
+    overflow: hidden;
+  }
+  dialog {
+    color: inherit;
+  }
+  dialog::backdrop {
+    background: rgb(38 51 31 / 0.55);
+  }
+}
+
+/* Scroll reveal: elements start hidden only when JS is running (see Reveal.tsx). */
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 0.8s var(--ease-calm),
+    transform 0.8s var(--ease-calm);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+.reveal[data-visible='true'] {
+  opacity: 1;
+  transform: none;
+}
+
+/* Native dialog entrance (no exit animation on purpose: closing should feel instant). */
+dialog[open].dialog-sheet {
+  animation: sheet-in 0.35s var(--ease-calm);
+}
+dialog[open].dialog-drawer {
+  animation: drawer-in 0.35s var(--ease-calm);
+}
+@keyframes sheet-in {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+}
+@keyframes drawer-in {
+  from {
+    opacity: 0;
+    transform: translateX(40px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
