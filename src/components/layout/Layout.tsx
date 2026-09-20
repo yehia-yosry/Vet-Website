@@ -3,7 +3,7 @@ import { Outlet, useLocation } from 'react-router'
 import { BookingProvider } from '../booking/BookingProvider'
 import { Footer } from './Footer'
 import { Header } from './Header'
-import { Analytics } from "@vercel/analytics/next"
+import { Analytics } from "@vercel/analytics/react"
 
 /** Restores scroll position on navigation (router does not do this for us). Honors #hash links. */
 function ScrollManager() {
@@ -35,7 +35,8 @@ export function Layout() {
         <Outlet />
       </main>
       <Footer />
+      <Analytics /> 
     </BookingProvider>
-    </Analytics>
+    
   )
 }
