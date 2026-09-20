@@ -53,7 +53,7 @@ export function DoctorProfile({ doctor }: { doctor: TeamMember }) {
 
           <p className="mt-7 max-w-xl text-lg leading-9 text-ink-soft">{doctor.bio}</p>
           <Button className="mt-8" size="lg" onClick={() => openBooking()}>
-            احجز موعدًا مع د. كريم
+            احجز موعدًا مع د. أحمد
           </Button>
         </div>
       </Container>
