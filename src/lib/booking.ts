@@ -1,4 +1,4 @@
-import { clinic } from '../config/clinic'
+import { clinic, whatsappUrl } from '../config/clinic'
 import { toWesternDigits } from './format'
 
 export const petKinds = ['كلب', 'قطة', 'أخرى'] as const
@@ -82,5 +82,5 @@ export function buildWhatsAppLink(values: BookingValues): string {
   ]
   if (values.notes.trim()) lines.push(`ملاحظات: ${values.notes.trim()}`)
   lines.push('', 'شكرًا لكم.')
-  return `https://wa.me/${clinic.whatsappNumber}?text=${encodeURIComponent(lines.join('\n'))}`
+  return whatsappUrl(lines.join('\n'))
 }

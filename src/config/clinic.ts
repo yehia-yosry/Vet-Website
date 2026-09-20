@@ -6,7 +6,25 @@
 const env = import.meta.env
 
 const phone = env.VITE_CLINIC_PHONE ?? '+201001234567'
-const whatsappNumber = env.VITE_WHATSAPP_NUMBER ?? '201552004509'
+
+/**
+ * wa.me only targets a chat when the number is digits-only in international format
+ * (no "+", spaces, dashes, or leading zeros). Anything else makes WhatsApp fall back to
+ * its "choose a contact" screen, so we normalise whatever was typed in the env/config.
+ * Egyptian local numbers (01xxxxxxxxx) are converted to 201xxxxxxxxx.
+ */
+function toWhatsAppNumber(raw: string): string {
+  const digits = raw.replace(/\D/g, '').replace(/^00/, '')
+  return digits.startsWith('0') ? `20${digits.slice(1)}` : digits
+}
+
+const whatsappNumber = toWhatsAppNumber(env.VITE_WHATSAPP_NUMBER || '201552004509')
+
+/** Every WhatsApp link on the site goes through here so the clinic number is always preselected. */
+export function whatsappUrl(message?: string): string {
+  const base = `https://wa.me/${whatsappNumber}`
+  return message ? `${base}?text=${encodeURIComponent(message)}` : base
+}
 
 export const clinic = {
   name: 'D&C Vet Clinic',
@@ -19,7 +37,6 @@ export const clinic = {
   phone,
   /** Human-readable phone, shown in the UI. */
   phoneDisplay: '0155 200 4509',
-  whatsappNumber,
   email: env.VITE_CLINIC_EMAIL ?? 'info@dcvetclinic.example',
 
   address: {
@@ -39,7 +56,7 @@ export const clinic = {
     instagram: env.VITE_INSTAGRAM_URL ?? 'https://www.instagram.com/dandcvetclinc/?hl=en',
     tiktok: env.VITE_TIKTOK_URL ?? 'https://tiktok.com/',
     youtube: env.VITE_YOUTUBE_URL ?? 'https://youtube.com/',
-    whatsapp: `https://wa.me/${whatsappNumber}`,
+    whatsapp: whatsappUrl(),
   },
 } as const
 
